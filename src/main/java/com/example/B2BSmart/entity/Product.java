@@ -27,6 +27,7 @@ public class Product {
 	private Double preco;
 	private String marca;
 	private String descricao;
+	private String codigoEAN;
 	private Integer quantidadeInicial;
 	
 	//anotation voltado para gerar o momento exato de certos procedimentos, como criação e atualização
@@ -40,13 +41,14 @@ public class Product {
 	}
 	
 	public Product(Long id, String nome, Double preco, String marca, String descricao,
-			Integer quantidadeInicial, Date dataCriacao, Date dataAtualizacao) {
+			Integer quantidadeInicial, Date dataCriacao, String codigoEAN, Date dataAtualizacao) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 		this.marca = marca;
 		this.descricao = descricao;
+		this.codigoEAN = codigoEAN;
 		this.quantidadeInicial = quantidadeInicial;
 		this.dataCriacao = dataCriacao;
 		this.dataAtualizacao = dataAtualizacao;
@@ -106,6 +108,15 @@ public class Product {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	
+
+	public String getCodigoEAN() {
+		return codigoEAN;
+	}
+
+	public void setCodigoEAN(String codigoEAN) {
+		this.codigoEAN = codigoEAN;
 	}
 
 	public void setQuantidadeInicial(Integer quantidadeInicial) {
