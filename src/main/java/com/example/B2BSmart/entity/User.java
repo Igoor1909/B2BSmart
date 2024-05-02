@@ -1,13 +1,9 @@
 package com.example.B2BSmart.entity;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Date;
+
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +15,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "user")
-public class User implements UserDetails {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,9 +35,9 @@ public class User implements UserDetails {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAtualizacao;
-
+	
 	public User() {
-
+		
 	}
 
 	public User(Long id, String razaoSocial, String cNPJ, String email, String senha, UserRoles tipo, String rua,
@@ -165,47 +161,5 @@ public class User implements UserDetails {
 		return Objects.equals(id, other.id);
 	}
 
-	@Override
-	//Metodo feito para permitir funcionalidades que o usuario poderá realizar de acordo com o tipo de seu registro
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if (this.tipo == tipo.FORNECEDOR)
-			return List.of(new SimpleGrantedAuthority("ROLE_FORNECEDOR"), (new SimpleGrantedAuthority("ROLE_CLIENTE")));
-		else
-			return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
-	}
-
-	@Override
-	public String getPassword() {
-		return senha;
-	}
-
-	@Override
-	public String getUsername() {
-		return email;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
-	}
 
 }
