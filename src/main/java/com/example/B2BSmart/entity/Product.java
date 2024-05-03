@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "product")
@@ -27,31 +25,23 @@ public class Product {
 	private Double preco;
 	private String marca;
 	private String descricao;
-	private String codigoEAN;
+	private String codigo_EAN;
 	private Integer quantidadeInicial;
-	
-	//anotation voltado para gerar o momento exato de certos procedimentos, como criação e atualização
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataCriacao;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataAtualizacao;
-	
+		
 	public Product() {
 		
 	}
 	
 	public Product(Long id, String nome, Double preco, String marca, String descricao,
-			Integer quantidadeInicial, Date dataCriacao, String codigoEAN, Date dataAtualizacao) {
+			Integer quantidadeInicial, Date dataCriacao, String codigo_EAN, Date dataAtualizacao) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 		this.marca = marca;
 		this.descricao = descricao;
-		this.codigoEAN = codigoEAN;
+		this.codigo_EAN = codigo_EAN;
 		this.quantidadeInicial = quantidadeInicial;
-		this.dataCriacao = dataCriacao;
-		this.dataAtualizacao = dataAtualizacao;
 	}
 
 
@@ -81,13 +71,6 @@ public class Product {
 		return quantidadeInicial;
 	}
 
-	public Date getDataCriacao() {
-		return dataCriacao;
-	}
-
-	public Date getDataAtualizacao() {
-		return dataAtualizacao;
-	}
 
 	public void setId(Long id) {
 		this.id = id;
@@ -112,23 +95,15 @@ public class Product {
 	
 
 	public String getCodigoEAN() {
-		return codigoEAN;
+		return codigo_EAN;
 	}
 
-	public void setCodigoEAN(String codigoEAN) {
-		this.codigoEAN = codigoEAN;
+	public void setCodigoEAN(String codigo_EAN) {
+		this.codigo_EAN = codigo_EAN;
 	}
 
 	public void setQuantidadeInicial(Integer quantidadeInicial) {
 		this.quantidadeInicial = quantidadeInicial;
-	}
-
-	public void setDataCriacao(Date dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
-
-	public void setDataAtualizacao(Date dataAtualizacao) {
-		this.dataAtualizacao = dataAtualizacao;
 	}
 
 	@Override

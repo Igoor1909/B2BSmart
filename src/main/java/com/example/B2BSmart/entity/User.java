@@ -10,8 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "user")
@@ -30,11 +28,6 @@ public class User {
 	private String estado;
 	private String bairro;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataCriacao;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataAtualizacao;
 	
 	public User() {
 		
@@ -52,8 +45,7 @@ public class User {
 		this.rua = rua;
 		this.estado = estado;
 		this.bairro = bairro;
-		this.dataCriacao = dataCriacao;
-		this.dataAtualizacao = dataAtualizacao;
+
 	}
 
 	public Long getId() {
@@ -100,14 +92,6 @@ public class User {
 		return bairro;
 	}
 
-	public Date getDataCriacao() {
-		return dataCriacao;
-	}
-
-	public Date getDataAtualizacao() {
-		return dataAtualizacao;
-	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -136,13 +120,6 @@ public class User {
 		this.bairro = bairro;
 	}
 
-	public void setDataCriacao(Date dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
-
-	public void setDataAtualizacao(Date dataAtualizacao) {
-		this.dataAtualizacao = dataAtualizacao;
-	}
 
 	@Override
 	public int hashCode() {

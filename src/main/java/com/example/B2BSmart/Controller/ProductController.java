@@ -22,29 +22,29 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-	
-	//anotation voltado para apresentar tudo que foi registrado
-	@GetMapping("/")
-	//metodo voltado para apresentar todos os produtos cadastrados em formato de lista
-	public List<Product> buscarProdutos(){
+
+	// Método para buscar todos os produtos cadastrados
+	@GetMapping(value = "/buscar")
+	public List<Product> buscarProdutos() {
 		return productService.buscarProdutos();
 	}
-	
-	//anotation voltado para inserir novo produto no BD através do metodo JSON
-	@PostMapping("/")
-	public Product inserirProduto(@RequestBody Product obj) {
+
+	// Método para cadastrar um novo produto
+	@PostMapping(value = "/cadastrar")
+	public Product inserirProduto(@RequestBody Product obj) throws Exception {
 		return productService.inserirProduto(obj);
 	}
-	
-	//anotation voltado para alterar produtos ja cadastrados através do metodo JSON
-	@PutMapping("/{id}")
-	public Product alterarProduto(@RequestBody Product obj) {
-		return productService.alterarProduto(obj);
+
+	// Método para alterar um produto existente
+	@PutMapping(value = "/alterar/{id}")
+	public ResponseEntity<Product> alterarProduto(@PathVariable Long id, @RequestBody Product obj) throws Exception {
+		obj = productService.alterarProduto(obj, id);
+		return ResponseEntity.ok().body(obj);
 	}
-	
-	//anotation voltado para deletar o produto pelo seu ID
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluirProduto(@PathVariable("id")Long id){
+
+	// Método para excluir um produto pelo seu ID
+	@DeleteMapping(value = "/deletar/{id}")
+	public ResponseEntity<Void> excluirProduto(@PathVariable("id") Long id) {
 		productService.excluirProduto(id);
 		return ResponseEntity.ok().build();
 	}
