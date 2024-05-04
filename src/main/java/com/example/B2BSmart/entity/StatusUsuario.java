@@ -1,6 +1,6 @@
 package com.example.B2BSmart.entity;
 
-public enum UserRoles {
+public enum StatusUsuario {
 
 	//Criando os tipos pre determinados para realizar o cadastro
 	CLIENTE("cliente"), 
@@ -9,7 +9,7 @@ public enum UserRoles {
 	private String role;
 
 	//Construtor para inserir as roles nas demais classes
-	UserRoles(String role) {
+	StatusUsuario(String role) {
 		this.role = role;
 	}
 	

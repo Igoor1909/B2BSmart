@@ -17,38 +17,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.B2BSmart.entity.User;
+import com.example.B2BSmart.entity.Cliente;
+import com.example.B2BSmart.entity.Fornecedor;
 import com.example.B2BSmart.exceptions.ServiceExc;
-import com.example.B2BSmart.services.UserService;
+import com.example.B2BSmart.services.FornecedorService;
 import com.example.B2BSmart.util.Util;
 
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("B2B/usuario")
-public class UserController {
+@RequestMapping("B2B/fornecedor")
+public class FornecedorController {
 
 	// Injeção de dependência do UserService para acesso aos métodos de serviço relacionados ao usuário
 	@Autowired
-	private UserService userService;
+	private FornecedorService userService;
 
 	// Mapeamento do endpoint "/buscar" para o método buscarUsuario usando o método GET
 	@GetMapping(value = "/buscar")
-	public List<User> buscarUsuario() {
+	public List<Fornecedor> buscarUsuario() {
 	    // Chama o serviço userService para buscar e retornar todos os usuários cadastrados
 	    return userService.buscarUsuario();
 	}
 
 	// Mapeamento do endpoint "/cadastrar" para o método inserirUsuario usando o método POST
 	@PostMapping(value = "/cadastrar")
-	public User inserirUsuario(@RequestBody User obj) throws Exception {
+	public Fornecedor inserirUsuario(@RequestBody Fornecedor obj) throws Exception {
 	    // Chama o serviço userService para inserir um novo usuário utilizando os dados fornecidos no corpo da requisição
 	    return userService.inserirUsuario(obj);
 	}
 
 	// Mapeamento do endpoint "/alterar/{id}" para o método alterarUsuario usando o método PUT
 	@PutMapping(value = "/alterar/{id}")
-	public ResponseEntity<User> alterarUsuario(@PathVariable Long id, @RequestBody User obj) throws Exception {
+	public ResponseEntity<Fornecedor> alterarUsuario(@PathVariable Long id, @RequestBody Fornecedor obj) throws Exception {
 	    // Chama o serviço userService para alterar o usuário com o ID fornecido, utilizando os dados do objeto User recebido no corpo da requisição
 	    obj = userService.alterarUsuario(obj, id);
 	    // Retorna uma resposta com status 200 (OK) e o objeto User alterado no corpo da resposta
@@ -67,7 +68,7 @@ public class UserController {
 
 	// Mapeamento do endpoint "/login" para o método login usando o método POST
 	@PostMapping(value = "/login")
-	public ResponseEntity<String> login(@Validated @RequestBody User usuario, BindingResult br, HttpSession session)
+	public ResponseEntity<String> login(@Validated @RequestBody Cliente usuario, BindingResult br, HttpSession session)
 			throws NoSuchAlgorithmException, ServiceExc {
 		// Verifica se houve erros de validação nos campos do objeto User
 		if (br.hasErrors()) {
@@ -79,7 +80,7 @@ public class UserController {
 		// Verifica se a senha do usuário não é nula
 		if (usuario.getSenha() != null) {
 			// Tenta realizar o login do usuário utilizando o serviço userService
-			User userLogin = userService.loginUsuario(usuario.getEmail(), Util.md5(usuario.getSenha()));
+			Fornecedor userLogin = userService.loginUsuario(usuario.getEmail(), Util.md5(usuario.getSenha()));
 			// Verifica se o usuário não foi encontrado
 			if (userLogin == null) {
 				// Se o usuário não foi encontrado, retorna uma resposta com status 404

@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 import com.example.B2BSmart.entity.Product;
 import com.example.B2BSmart.exceptions.EanExistException;
 import com.example.B2BSmart.exceptions.ResourceNotFoundException;
-import com.example.B2BSmart.repository.ProductRepository;
+import com.example.B2BSmart.repository.ProdutoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class ProductService {
+public class ProdutoService {
 
 	// anotation responsavel por injetar uma outra classe nesta
 	@Autowired
-	ProductRepository productRepository;
+	ProdutoRepository productRepository;
 
 	// Metodo voltado a buscar a lista de produtos cadastrados no BD
 	public List<Product> buscarProdutos() {

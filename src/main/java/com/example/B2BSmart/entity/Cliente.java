@@ -12,8 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "cliente")
+public class Cliente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,17 +23,17 @@ public class User {
 	private String email;
 	private String senha;
 	// Usando em ENUM para definir o tipo de usuario, ou FORNECEDOR ou CLIENTE
-	private UserRoles tipo;
+	private StatusUsuario tipo;
 	private String rua;
 	private String estado;
 	private String bairro;
 
 	
-	public User() {
+	public Cliente() {
 		
 	}
 
-	public User(Long id, String razaoSocial, String cNPJ, String email, String senha, UserRoles tipo, String rua,
+	public Cliente(Long id, String razaoSocial, String cNPJ, String email, String senha, StatusUsuario tipo, String rua,
 			String estado, String bairro, Date dataCriacao, Date dataAtualizacao) {
 		super();
 		this.id = id;
@@ -72,11 +72,11 @@ public class User {
 		return senha;
 	}
 
-	public UserRoles getTipo() {
+	public StatusUsuario getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(UserRoles tipo) {
+	public void setTipo(StatusUsuario tipo) {
 		this.tipo = tipo;
 	}
 
@@ -134,7 +134,7 @@ public class User {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		Cliente other = (Cliente) obj;
 		return Objects.equals(id, other.id);
 	}
 

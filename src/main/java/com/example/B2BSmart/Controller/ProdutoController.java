@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.B2BSmart.entity.Product;
-import com.example.B2BSmart.services.ProductService;
+import com.example.B2BSmart.services.ProdutoService;
 
 @RestController
 @RequestMapping("B2B/produto")
-public class ProductController {
+public class ProdutoController {
 
 	@Autowired
-	private ProductService productService;
+	private ProdutoService productService;
 
 	// Método para buscar todos os produtos cadastrados
 	@GetMapping(value = "/buscar")

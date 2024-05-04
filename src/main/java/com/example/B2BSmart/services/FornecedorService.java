@@ -6,29 +6,29 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.B2BSmart.entity.User;
+import com.example.B2BSmart.entity.Fornecedor;
 import com.example.B2BSmart.exceptions.CnpjExistsException;
 import com.example.B2BSmart.exceptions.CriptoExistsException;
 import com.example.B2BSmart.exceptions.EmailExistsException;
 import com.example.B2BSmart.exceptions.ResourceNotFoundException;
 import com.example.B2BSmart.exceptions.ServiceExc;
-import com.example.B2BSmart.repository.UserRepository;
+import com.example.B2BSmart.repository.FornecedorRespository;
 import com.example.B2BSmart.util.Util;
 
 
 @Service
-public class UserService {
+public class FornecedorService {
 
     @Autowired
-    UserRepository repository;
+    FornecedorRespository repository;
 
     // Método para buscar todos os usuários
-    public List<User> buscarUsuario() {
+    public List<Fornecedor> buscarUsuario() {
         return repository.findAll();
     }
 
     // Método para inserir um novo usuário
-    public User inserirUsuario(User obj) throws Exception {
+    public Fornecedor inserirUsuario(Fornecedor obj) throws Exception {
         try {
             // Verifica se já existe um usuário com o mesmo email
             if (repository.findByEmail(obj.getEmail()) != null) {
@@ -46,13 +46,13 @@ public class UserService {
             throw new CriptoExistsException("Erro na criptografia da senha");
         }
 
-        User user = repository.saveAndFlush(obj);
+        Fornecedor user = repository.saveAndFlush(obj);
         return user;
     }
 
     // Método para alterar um usuário existente
-    public User alterarUsuario(User obj, Long id) throws Exception {
-        User usuario;
+    public Fornecedor alterarUsuario(Fornecedor obj, Long id) throws Exception {
+        Fornecedor usuario;
         try {
             // Busca o usuário pelo ID
             usuario = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     // Método para atualizar os dados de um usuário
-    public void updateData(User entity, User obj) {
+    public void updateData(Fornecedor entity, Fornecedor obj) {
         entity.setRazaoSocial(obj.getRazaoSocial());
         entity.setCNPJ(obj.getCNPJ());
         entity.setEmail(obj.getEmail());
@@ -83,14 +83,14 @@ public class UserService {
     // Método para excluir um usuário pelo ID
     public void excluirUsuario(Long id) {
         // Busca o usuário pelo ID
-        User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        Fornecedor user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         repository.delete(user);
     }
 
     // Método para realizar o login do usuário
-    public User loginUsuario(String email, String senha) throws ServiceExc {
+    public Fornecedor loginUsuario(String email, String senha) throws ServiceExc {
         // Busca o usuário pelo email e senha fornecidos
-        User userLogin = repository.buscarLogin(email, senha);
+        Fornecedor userLogin = repository.buscarLogin(email, senha);
         return userLogin;
     }
 }
