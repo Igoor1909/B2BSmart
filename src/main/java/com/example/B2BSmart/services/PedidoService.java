@@ -1,7 +1,9 @@
 package com.example.B2BSmart.services;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,29 @@ public class PedidoService {
 	// anotation responsavel por injetar uma outra classe nesta
 	@Autowired
 	PedidoRepository Repository;
-
-	// Metodo voltado a buscar a lista de Pedidos cadastrados no BD
-	public List<Pedido> buscarPedidos() {
+	
+	//metodo voltado para buscar todos os conteudos da lista de pedidos
+	public List<Pedido> buscarTodos(){
 		return Repository.findAll();
 	}
+
+	public List<Pedido> buscarPorID(Long id) throws Exception {
+	    try {
+	        // Obtém o pedido correspondente ao ID fornecido
+	        Pedido pedido = Repository.getReferenceById(id);
+	        
+	        // Desproxifica o pedido
+	        pedido = (Pedido) Hibernate.unproxy(pedido);
+	        
+	        // Retorna o pedido
+	        return Collections.singletonList(pedido);
+	        
+	    } catch (EntityNotFoundException e) {
+	        // Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
+	        throw new ResourceNotFoundException(id);
+	    }
+	}
+
 
 	// Metodo voltado para cadastros de novos Pedidos no BD
 	public Pedido inserirPedido(Pedido obj) throws Exception {
@@ -52,34 +72,81 @@ public class PedidoService {
 		entity.setStatusPedido(obj.getStatusPedido());
 	}
 
-	// Método para atualizar o status de um pedido para CANCELADO
-	public Pedido updateStatus(Pedido obj) {
-		obj.setStatusPedido(StatusPedido.CANCELADO); // Define o status do pedido como CANCELADO
-		return obj; // Retorna o pedido atualizado
+	// Método para cancelar um pedido
+	public Pedido cancelarPedido(Pedido obj, Long id) throws Exception {
+		try {
+			// Obtém o pedido correspondente ao ID fornecido
+			Pedido pedido = Repository.getReferenceById(id);
+			// Verifica se o pedido está em trânsito
+			if (pedido.getStatusPedido() == StatusPedido.EM_TRANSPORTE) {
+				// Lança uma exceção se o pedido estiver em trânsito
+				throw new StatusEnviadoException("Pedido em trânsito, impossível cancelar");
+				// Verifica se o pedido está finalizado
+			} else if (pedido.getStatusPedido() == StatusPedido.FINALIZADO) {
+				// Lança uma exceção se o pedido estiver finalizado
+				throw new StatusEnviadoException("Pedido finalizado, impossivel cancelar");
+				// Verifica se o pedido já esta cancelado
+			} else if (pedido.getStatusPedido() == StatusPedido.CANCELADO) {
+				// Lança uma exceção se o pedido ja estiver cancelado
+				throw new StatusEnviadoException("Pedido ja cancelado!");
+			}
+			// Define o status do pedido como CANCELADO
+			pedido.setStatusPedido(StatusPedido.CANCELADO);
+			// Salva as alterações no banco de dados
+			return Repository.save(pedido);
+		} catch (EntityNotFoundException e) {
+			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
-	// Método para cancelar um pedido
-	public Pedido cancelarPedido(Pedido obj, Pedido entity, Long id) throws Exception {
+	public Pedido enviarPedido(Pedido obj, Long id) throws Exception {
+		try {
+			// Obtém o pedido correspondente ao ID fornecido
+			Pedido pedido = Repository.getReferenceById(id);
+			// Verifica se o pedido já está em transporte
+			if (pedido.getStatusPedido() == StatusPedido.EM_TRANSPORTE) {
+				// Lança uma exceção se o pedido já estiver em transporte
+				throw new StatusEnviadoException("Pedido já em transporte!");
+			} else if (pedido.getStatusPedido() == StatusPedido.FINALIZADO) {
+				// Lança uma exceção se o pedido já estiver finalizado
+				throw new StatusEnviadoException("Pedido já finalizado!");
+			} else if (pedido.getStatusPedido() == StatusPedido.CANCELADO) {
+				// Lança uma exceção se o pedido já estiver cancelado
+				throw new StatusEnviadoException("Pedido já cancelado");
+			}
+			// Define o status do pedido como EM_TRANSPORTE
+			pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
+			// Salva as alterações no banco de dados
+			return Repository.save(pedido);
+		} catch (EntityNotFoundException e) {
+			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
+			throw new ResourceNotFoundException(id);
+		}
+	}
+
+	public Pedido finalizarPedido(Pedido obj, Long id) throws Exception {
 		try {
 			// Obtém o pedido correspondente ao ID fornecido
 			Pedido pedido = Repository.getReferenceById(id);
 
-			// Verifica se o pedido está em trânsito ou finalizado
-			if (pedido.getStatusPedido() == StatusPedido.EM_TRANSPORTE) {
-				// Lança uma exceção se o pedido estiver em trânsito ou finalizado
-				throw new StatusEnviadoException("Pedido em trânsito, impossível cancelar");
-			}else if(pedido.getStatusPedido() == StatusPedido.FINALIZADO) {
-				throw new StatusEnviadoException("Pedido finalizado, impossivel cancelar") ;
-			}else if(pedido.getStatusPedido() == StatusPedido.CANCELADO) {
-				throw new StatusEnviadoException("Pedido ja cancelado!");
+			// Verifica se o pedido ainda está na fase de solicitação
+			if (pedido.getStatusPedido() == StatusPedido.SOLICITADO) {
+				// Lança uma exceção se o pedido ainda não saiu para entrega
+				throw new StatusEnviadoException("Pedido ainda não saiu para entrega");
+			} else if (pedido.getStatusPedido() == StatusPedido.CANCELADO) {
+				// Lança uma exceção se o pedido já estiver cancelado
+				throw new StatusEnviadoException("Pedido já cancelado");
+			} else if (pedido.getStatusPedido() == StatusPedido.FINALIZADO) {
+				// Lança uma exceção se o pedido já estiver finalizado
+				throw new StatusEnviadoException("Pedido já finalizado!");
 			}
 
-			// Define o status do pedido como CANCELADO
-			pedido.setStatusPedido(StatusPedido.CANCELADO);
+			// Define o status do pedido como FINALIZADO
+			pedido.setStatusPedido(StatusPedido.FINALIZADO);
 
 			// Salva as alterações no banco de dados
 			return Repository.save(pedido);
-
 		} catch (EntityNotFoundException e) {
 			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
 			throw new ResourceNotFoundException(id);

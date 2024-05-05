@@ -26,8 +26,15 @@ public class PedidoController {
 	// Método para buscar todos os Pedidos cadastrados
 	@GetMapping(value = "/buscar")
 	public List<Pedido> buscarPedidos() {
-		return pedidoService.buscarPedidos();
+		return pedidoService.buscarTodos();
 	}
+	
+	// Método para buscar os pedidos cadastrados por ID
+	@GetMapping(value = "/buscar/{id}")
+	public List<Pedido> buscarPorID(@PathVariable Long id) throws Exception {
+	    return pedidoService.buscarPorID(id);
+	}
+
 
 	// Método para cadastrar um novo Pedido
 	@PostMapping(value = "/registrar")
@@ -49,9 +56,25 @@ public class PedidoController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@PutMapping("/cancelar/{id}")
+	// Metodo para trocar o status do pedido para cancelado a partir de seu ID
+	@PutMapping(value = "/cancelar/{id}")
 	public ResponseEntity<Pedido> cancelarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
-		obj = pedidoService.cancelarPedido(obj, obj, id);
+		obj = pedidoService.cancelarPedido(obj, id);
+		return ResponseEntity.ok().build();
+	}
+	
+	// Metodo para trocar o status do pedido para EM_TRANSITO a partir de seu ID
+	@PutMapping(value = "/enviar/{id}")
+	public ResponseEntity<Pedido> enviarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception{
+		obj = pedidoService.enviarPedido(obj, id);
+		return ResponseEntity.ok().build();
+	}
+	
+	// Metodo para trocar o status do pedido para FINALIZADO a partir de seu ID
+	@PutMapping(value = "/finalizar/{id}")
+	public ResponseEntity<Pedido> finalizarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception{
+		obj = pedidoService.finalizarPedido(obj, id);
 		return ResponseEntity.ok().build();
 	}
 }
+
