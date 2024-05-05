@@ -2,6 +2,7 @@ package com.example.B2BSmart.services;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,10 +83,16 @@ public class FornecedorService {
 
     // Método para excluir um usuário pelo ID
     public void excluirUsuario(Long id) {
-        // Busca o usuário pelo ID
-        Fornecedor user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
-        repository.delete(user);
+        try {
+            // Busca o usuário pelo ID
+            Fornecedor user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+            repository.delete(user);
+        } catch (NoSuchElementException e) {
+            // Tratamento da exceção quando o ID não é encontrado
+            System.out.println("ID não encontrado: " + id);
+        }
     }
+
 
     // Método para realizar o login do usuário
     public Fornecedor loginUsuario(String email, String senha) throws ServiceExc {

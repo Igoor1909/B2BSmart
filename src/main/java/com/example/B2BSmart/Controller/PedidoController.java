@@ -48,4 +48,10 @@ public class PedidoController {
 		pedidoService.excluirPedido(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PutMapping("/cancelar/{id}")
+	public ResponseEntity<Pedido> cancelarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
+		obj = pedidoService.cancelarPedido(obj, obj, id);
+		return ResponseEntity.ok().build();
+	}
 }

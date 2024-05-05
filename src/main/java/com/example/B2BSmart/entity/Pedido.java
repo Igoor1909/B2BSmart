@@ -108,4 +108,5 @@ public class Pedido implements Serializable {
 		return Objects.equals(id, other.id);
 
 	}
+
 }
