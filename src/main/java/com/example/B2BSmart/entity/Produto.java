@@ -10,8 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "product")
-public class Product {
+@Table(name = "produto")
+public class Produto {
 
 	//inserindo atributos do produto
 	
@@ -28,11 +28,11 @@ public class Product {
 	private String codigo_EAN;
 	private Integer quantidadeInicial;
 		
-	public Product() {
+	public Produto() {
 		
 	}
 	
-	public Product(Long id, String nome, Double preco, String marca, String descricao,
+	public Produto(Long id, String nome, Double preco, String marca, String descricao,
 			Integer quantidadeInicial, Date dataCriacao, String codigo_EAN, Date dataAtualizacao) {
 		super();
 		this.id = id;
@@ -119,7 +119,7 @@ public class Product {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Product other = (Product) obj;
+		Produto other = (Produto) obj;
 		return Objects.equals(id, other.id);
 	}
 	

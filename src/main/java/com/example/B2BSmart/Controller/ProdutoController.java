@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.B2BSmart.entity.Product;
+import com.example.B2BSmart.entity.Produto;
 import com.example.B2BSmart.services.ProdutoService;
 
 @RestController
@@ -25,19 +25,19 @@ public class ProdutoController {
 
 	// Método para buscar todos os produtos cadastrados
 	@GetMapping(value = "/buscar")
-	public List<Product> buscarProdutos() {
+	public List<Produto> buscarProdutos() {
 		return productService.buscarProdutos();
 	}
 
 	// Método para cadastrar um novo produto
 	@PostMapping(value = "/cadastrar")
-	public Product inserirProduto(@RequestBody Product obj) throws Exception {
+	public Produto inserirProduto(@RequestBody Produto obj) throws Exception {
 		return productService.inserirProduto(obj);
 	}
 
 	// Método para alterar um produto existente
 	@PutMapping(value = "/alterar/{id}")
-	public ResponseEntity<Product> alterarProduto(@PathVariable Long id, @RequestBody Product obj) throws Exception {
+	public ResponseEntity<Produto> alterarProduto(@PathVariable Long id, @RequestBody Produto obj) throws Exception {
 		obj = productService.alterarProduto(obj, id);
 		return ResponseEntity.ok().body(obj);
 	}

@@ -1,20 +1,28 @@
 package com.example.B2BSmart.entity;
 
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cliente")
-public class Cliente {
+public class Cliente implements Serializable {
 
+
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -27,6 +35,10 @@ public class Cliente {
 	private String rua;
 	private String estado;
 	private String bairro;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos = new ArrayList<>();
 
 	
 	public Cliente() {
@@ -136,6 +148,10 @@ public class Cliente {
 			return false;
 		Cliente other = (Cliente) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	public List<Pedido> getPedidos() {
+		return pedidos;
 	}
 
 

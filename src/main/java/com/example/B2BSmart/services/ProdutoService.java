@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.B2BSmart.entity.Product;
+import com.example.B2BSmart.entity.Produto;
 import com.example.B2BSmart.exceptions.EanExistException;
 import com.example.B2BSmart.exceptions.ResourceNotFoundException;
 import com.example.B2BSmart.repository.ProdutoRepository;
@@ -20,25 +20,25 @@ public class ProdutoService {
 	ProdutoRepository productRepository;
 
 	// Metodo voltado a buscar a lista de produtos cadastrados no BD
-	public List<Product> buscarProdutos() {
+	public List<Produto> buscarProdutos() {
 		return productRepository.findAll();
 	}
 
 	// Metodo voltado para cadastros de novos produtos no BD
-	public Product inserirProduto(Product obj) throws Exception {
+	public Produto inserirProduto(Produto obj) throws Exception {
 		
 			//metodo voltado para verificar se há codigos eans iguais no banco de dados
 			if (productRepository.findByCodigoEAN(obj.getCodigoEAN()) != null) {
 				throw new EanExistException("Ja existe um codigo EAN para " + obj.getCodigoEAN() + " ");
 			}
 		// criando objeto para criação do novo produto
-		Product produtoNovo = productRepository.saveAndFlush(obj);
+		Produto produtoNovo = productRepository.saveAndFlush(obj);
 		return produtoNovo;
 	}
 
 	// Metodo voltado para alterar algum produto ja cadastrado no BD
-	public Product alterarProduto(Product obj, Long id) throws Exception {
-		Product produto;
+	public Produto alterarProduto(Produto obj, Long id) throws Exception {
+		Produto produto;
 		try {
 			produto = productRepository.getReferenceById(id);
 			updateData(produto, obj);
@@ -49,7 +49,7 @@ public class ProdutoService {
 	}
 
 	// metodo para fazer a troca de informações no momento de edição do objeto
-	public void updateData(Product entity, Product obj) {
+	public void updateData(Produto entity, Produto obj) {
 		entity.setNome(obj.getNome());
 		entity.setPreco(obj.getPreco());
 		entity.setMarca(obj.getMarca());
@@ -61,7 +61,7 @@ public class ProdutoService {
 	// Metodo voltado para excluir produtos ja cadastrado no BD, buscando pelo seu
 	// ID
 	public void excluirProduto(Long id) {
-		Product produto;
+		Produto produto;
 		
 		try {
 			produto = productRepository.findById(id).get();
