@@ -39,31 +39,37 @@ public class FornecedorController {
 	    // Chama o serviço userService para buscar e retornar todos os usuários cadastrados
 	    return userService.buscarUsuario();
 	}
+	
+	@GetMapping(value = "/buscar/{id}")
+	public List<Fornecedor> buscarPorID(@PathVariable Long id) throws Exception {
+	    return userService.buscarPorID(id);
+	}
 
 	// Mapeamento do endpoint "/cadastrar" para o método inserirUsuario usando o método POST
 	@PostMapping(value = "/cadastrar")
-	public Fornecedor inserirUsuario(@RequestBody Fornecedor obj) throws Exception {
+	public ResponseEntity<String> inserirUsuario(@RequestBody Fornecedor obj) throws Exception {
 	    // Chama o serviço userService para inserir um novo usuário utilizando os dados fornecidos no corpo da requisição
-	    return userService.inserirUsuario(obj);
+		obj = userService.inserirUsuario(obj);
+	    return ResponseEntity.ok("Usuario inserido com sucesso!");
 	}
 
 	// Mapeamento do endpoint "/alterar/{id}" para o método alterarUsuario usando o método PUT
 	@PutMapping(value = "/alterar/{id}")
-	public ResponseEntity<Fornecedor> alterarUsuario(@PathVariable Long id, @RequestBody Fornecedor obj) throws Exception {
+	public ResponseEntity<String> alterarUsuario(@PathVariable Long id, @RequestBody Fornecedor obj) throws Exception {
 	    // Chama o serviço userService para alterar o usuário com o ID fornecido, utilizando os dados do objeto User recebido no corpo da requisição
 	    obj = userService.alterarUsuario(obj, id);
 	    // Retorna uma resposta com status 200 (OK) e o objeto User alterado no corpo da resposta
-	    return ResponseEntity.ok().body(obj);
+	    return ResponseEntity.ok("Usuario alterado com sucesso!");
 	}
 
 
 	// Mapeamento do endpoint "/deletar/{id}" para o método excluirUsuario usando o método DELETE
 	@DeleteMapping(value = "/deletar/{id}")
-	public ResponseEntity<Void> excluirUsuario(@PathVariable("id") Long id) {
+	public ResponseEntity<String> excluirUsuario(@PathVariable("id") Long id) {
 	    // Chama o serviço userService para excluir o usuário com o ID fornecido
 	    userService.excluirUsuario(id);
 	    // Retorna uma resposta com status 200 (OK) indicando que o usuário foi excluído com sucesso
-	    return ResponseEntity.ok().build();
+	    return ResponseEntity.ok("Usuario excluido com sucesso!");
 	}
 
 	// Mapeamento do endpoint "/login" para o método login usando o método POST

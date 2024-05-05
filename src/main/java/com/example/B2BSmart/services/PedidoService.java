@@ -27,17 +27,15 @@ public class PedidoService {
 		return Repository.findAll();
 	}
 
+	// Metodo para buscar pedido apartir de seu ID
 	public List<Pedido> buscarPorID(Long id) throws Exception {
 	    try {
 	        // Obtém o pedido correspondente ao ID fornecido
 	        Pedido pedido = Repository.getReferenceById(id);
-	        
 	        // Desproxifica o pedido
 	        pedido = (Pedido) Hibernate.unproxy(pedido);
-	        
 	        // Retorna o pedido
 	        return Collections.singletonList(pedido);
-	        
 	    } catch (EntityNotFoundException e) {
 	        // Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
 	        throw new ResourceNotFoundException(id);

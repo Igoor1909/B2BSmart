@@ -1,9 +1,11 @@
 package com.example.B2BSmart.services;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import com.example.B2BSmart.exceptions.ServiceExc;
 import com.example.B2BSmart.repository.FornecedorRespository;
 import com.example.B2BSmart.util.Util;
 
+import jakarta.persistence.EntityNotFoundException;
+
 
 @Service
 public class FornecedorService {
@@ -27,6 +31,21 @@ public class FornecedorService {
     public List<Fornecedor> buscarUsuario() {
         return repository.findAll();
     }
+    
+	// Metodo para buscar fornecedor apartir de seu ID
+	public List<Fornecedor> buscarPorID(Long id) throws Exception {
+	    try {
+	        // Obtém o pedido correspondente ao ID fornecido
+	        Fornecedor user = repository.getReferenceById(id);
+	        // Desproxifica o pedido
+	        user = (Fornecedor) Hibernate.unproxy(user);
+	        // Retorna o pedido
+	        return Collections.singletonList(user);
+	    } catch (EntityNotFoundException e) {
+	        // Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
+	        throw new ResourceNotFoundException(id);
+	    }
+	}
 
     // Método para inserir um novo usuário
     public Fornecedor inserirUsuario(Fornecedor obj) throws Exception {

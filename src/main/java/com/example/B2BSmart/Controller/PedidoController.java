@@ -38,43 +38,45 @@ public class PedidoController {
 
 	// Método para cadastrar um novo Pedido
 	@PostMapping(value = "/registrar")
-	public Pedido inserirPedido(@RequestBody Pedido obj) throws Exception {
-		return pedidoService.inserirPedido(obj);
+	public ResponseEntity<String> inserirPedido(@RequestBody Pedido obj) throws Exception {
+		obj = pedidoService.inserirPedido(obj);
+		return ResponseEntity.ok("Pedido emitido com sucesso!");
 	}
 
 	// Método para alterar um Pedido existente
 	@PutMapping(value = "/alterar/{id}")
-	public ResponseEntity<Pedido> alterarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
+	public ResponseEntity<String> alterarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
 		obj = pedidoService.alterarPedido(obj, id);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok("Pedido alterado com sucesso!");
 	}
 
 	// Método para excluir um Pedido pelo seu ID
 	@DeleteMapping(value = "/deletar/{id}")
-	public ResponseEntity<Void> excluirPedido(@PathVariable("id") Long id) {
+	public ResponseEntity<String> excluirPedido(@PathVariable("id") Long id) {
 		pedidoService.excluirPedido(id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("Pedido excluido com sucesso!");
 	}
 	
 	// Metodo para trocar o status do pedido para cancelado a partir de seu ID
 	@PutMapping(value = "/cancelar/{id}")
-	public ResponseEntity<Pedido> cancelarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
+	public ResponseEntity<String> cancelarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
 		obj = pedidoService.cancelarPedido(obj, id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("Pedido cancelado com sucesso!");
 	}
 	
 	// Metodo para trocar o status do pedido para EM_TRANSITO a partir de seu ID
 	@PutMapping(value = "/enviar/{id}")
-	public ResponseEntity<Pedido> enviarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception{
-		obj = pedidoService.enviarPedido(obj, id);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<String> enviarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
+	    obj = pedidoService.enviarPedido(obj, id);
+	    return ResponseEntity.ok("Pedido enviado com sucesso!");
 	}
+
 	
 	// Metodo para trocar o status do pedido para FINALIZADO a partir de seu ID
 	@PutMapping(value = "/finalizar/{id}")
-	public ResponseEntity<Pedido> finalizarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception{
+	public ResponseEntity<String> finalizarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception{
 		obj = pedidoService.finalizarPedido(obj, id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("Pedido finalizado com sucesso!");
 	}
 }
 
