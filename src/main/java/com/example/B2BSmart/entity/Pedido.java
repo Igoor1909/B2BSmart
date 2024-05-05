@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,9 +23,11 @@ public class Pedido implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant dataHora;
+
+	private StatusPedido statusPedido;
 
 	@ManyToOne
 	@JoinColumn(name = "id_cliente")
@@ -40,10 +41,11 @@ public class Pedido implements Serializable {
 
 	}
 
-	public Pedido(Long id, Instant dataHora, Cliente cliente, Fornecedor fornecedor) {
+	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor) {
 		super();
 		this.id = id;
 		this.dataHora = dataHora;
+		this.statusPedido = statusPedido;
 		this.cliente = cliente;
 		this.fornecedor = fornecedor;
 	}
@@ -80,6 +82,15 @@ public class Pedido implements Serializable {
 		this.fornecedor = fornecedor;
 	}
 
+
+	public StatusPedido getStatusPedido() {
+		return statusPedido;
+	}
+
+	public void setStatusPedido(StatusPedido statusPedido) {
+		this.statusPedido = statusPedido;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -95,6 +106,6 @@ public class Pedido implements Serializable {
 			return false;
 		Pedido other = (Pedido) obj;
 		return Objects.equals(id, other.id);
-	}
 
+	}
 }

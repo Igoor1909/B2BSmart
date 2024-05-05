@@ -47,6 +47,7 @@ public class PedidoService {
 	public void updateData(Pedido entity, Pedido obj) {
 		entity.setCliente(obj.getCliente());
 		entity.setFornecedor(obj.getFornecedor());
+		entity.setStatusPedido(obj.getStatusPedido());
 	}
 
 	// Metodo voltado para excluir Pedidos ja cadastrado no BD, buscando pelo seu
