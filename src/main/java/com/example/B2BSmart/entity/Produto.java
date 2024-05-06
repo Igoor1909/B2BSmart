@@ -2,12 +2,17 @@ package com.example.B2BSmart.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,6 +37,13 @@ public class Produto implements Serializable {
 	private String descricao;
 	private String codigo_EAN;
 	private Integer quantidadeInicial;
+	
+	@ManyToMany
+	@JoinTable(name = "CategoriaProduto", 
+	joinColumns = @JoinColumn(name = "IdProduto"),
+	inverseJoinColumns = @JoinColumn(name = "IdCategoria"))
+	private Set<Categoria> categorias = new HashSet<>();
+	
 		
 	public Produto() {
 		
@@ -127,6 +139,16 @@ public class Produto implements Serializable {
 		Produto other = (Produto) obj;
 		return Objects.equals(id, other.id);
 	}
+
+	public Set<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(Set<Categoria> categorias) {
+		this.categorias = categorias;
+	}
+
+
 	
 	
 	

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.B2BSmart.entity.Categoria;
-import com.example.B2BSmart.entity.Cliente;
 import com.example.B2BSmart.services.CategoriaService;
 
 @RestController

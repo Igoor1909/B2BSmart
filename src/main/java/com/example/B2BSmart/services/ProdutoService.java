@@ -50,13 +50,15 @@ public class ProdutoService {
 
 	// metodo para fazer a troca de informações no momento de edição do objeto
 	public void updateData(Produto entity, Produto obj) {
-		entity.setNome(obj.getNome());
-		entity.setPreco(obj.getPreco());
-		entity.setMarca(obj.getMarca());
-		entity.setDescricao(obj.getDescricao());
-		entity.setCodigoEAN(obj.getCodigoEAN());
-		entity.setQuantidadeInicial(obj.getQuantidadeInicial());
+	    entity.setNome(obj.getNome());
+	    entity.setPreco(obj.getPreco());
+	    entity.setMarca(obj.getMarca());
+	    entity.setDescricao(obj.getDescricao());
+	    entity.setCodigoEAN(obj.getCodigoEAN());
+	    entity.setCategorias(obj.getCategorias()); 
+	    entity.setQuantidadeInicial(obj.getQuantidadeInicial());
 	}
+
 
 	// Metodo voltado para excluir produtos ja cadastrado no BD, buscando pelo seu
 	// ID

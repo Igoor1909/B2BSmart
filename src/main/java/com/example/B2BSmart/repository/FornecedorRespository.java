@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.B2BSmart.entity.Cliente;
 import com.example.B2BSmart.entity.Fornecedor;
 
 public interface FornecedorRespository extends JpaRepository<Fornecedor, Long> {

@@ -1,13 +1,19 @@
 package com.example.B2BSmart.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 
 @Entity
@@ -21,6 +27,10 @@ public class Categoria implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String nome;
+
+	@JsonIgnore
+	@ManyToMany(mappedBy = "categorias")
+	private Set<Produto> produtos = new HashSet<>();
 	
 	
 	public Categoria() {
@@ -72,6 +82,20 @@ public class Categoria implements Serializable {
 		Categoria other = (Categoria) obj;
 		return Objects.equals(id, other.id);
 	}
+
+
+	public Set<Produto> getProdutos() {
+		return produtos;
+	}
+
+
+	public void setProdutos(Set<Produto> produtos) {
+		this.produtos = produtos;
+	}
+
+
+	
+	
 	
 	
 }
