@@ -1,5 +1,6 @@
 package com.example.B2BSmart.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -11,7 +12,11 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "produto")
-public class Produto {
+public class Produto implements Serializable {
+
+	
+	private static final long serialVersionUID = 1L;
+
 
 	//inserindo atributos do produto
 	
