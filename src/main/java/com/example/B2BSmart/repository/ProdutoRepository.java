@@ -7,11 +7,16 @@ import org.springframework.data.repository.query.Param;
 import com.example.B2BSmart.entity.Produto;
 
 
+
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     
     // Método para encontrar um produto pelo código EAN
     @Query("select p from Produto p where p.codigo_EAN = :codigo_ean")
     public Produto findByCodigoEAN(@Param("codigo_ean") String codigoEAN);
+    
+    @Query("SELECT k FROM Produto k WHERE k.fornecedor.id = :fornecedorId")
+    Produto findByFornecedor(@Param("fornecedorId") Long fornecedorId);
+
 }
 
 

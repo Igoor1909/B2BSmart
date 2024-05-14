@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -36,7 +37,11 @@ public class Produto implements Serializable {
 	private String marca;
 	private String descricao;
 	private String codigo_EAN;
-	private Integer quantidadeInicial;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_fornecedor")
+	private Fornecedor fornecedor;
+	
 	
 	@ManyToMany
 	@JoinTable(name = "CategoriaProduto", 
@@ -50,7 +55,7 @@ public class Produto implements Serializable {
 	}
 	
 	public Produto(Long id, String nome, Double preco, String marca, String descricao,
-			Integer quantidadeInicial, Date dataCriacao, String codigo_EAN, Date dataAtualizacao) {
+			Integer quantidadeInicial, Date dataCriacao, String codigo_EAN, Date dataAtualizacao, Fornecedor fornecedor) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -58,7 +63,8 @@ public class Produto implements Serializable {
 		this.marca = marca;
 		this.descricao = descricao;
 		this.codigo_EAN = codigo_EAN;
-		this.quantidadeInicial = quantidadeInicial;
+		this.fornecedor = fornecedor;
+		
 	}
 
 
@@ -83,11 +89,6 @@ public class Produto implements Serializable {
 	public String getDescricao() {
 		return descricao;
 	}
-
-	public Integer getQuantidadeInicial() {
-		return quantidadeInicial;
-	}
-
 
 	public void setId(Long id) {
 		this.id = id;
@@ -118,9 +119,24 @@ public class Produto implements Serializable {
 	public void setCodigoEAN(String codigo_EAN) {
 		this.codigo_EAN = codigo_EAN;
 	}
+	
+	
 
-	public void setQuantidadeInicial(Integer quantidadeInicial) {
-		this.quantidadeInicial = quantidadeInicial;
+	public String getCodigo_EAN() {
+		return codigo_EAN;
+	}
+
+
+	public void setCodigo_EAN(String codigo_EAN) {
+		this.codigo_EAN = codigo_EAN;
+	}
+
+	public Fornecedor getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedor fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 
 	@Override
@@ -148,6 +164,9 @@ public class Produto implements Serializable {
 		this.categorias = categorias;
 	}
 
+
+
+	
 
 	
 	

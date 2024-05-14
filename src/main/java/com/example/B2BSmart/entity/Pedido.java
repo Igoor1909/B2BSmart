@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,7 +35,12 @@ public class Pedido implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "id_fornecedor")
 	private Fornecedor fornecedor;
-
+	
+	@ManyToOne
+	@JoinColumn(name = "id_produto")
+	private Produto produto;
+	
+	
 	public Pedido() {
 
 	}
@@ -89,6 +93,16 @@ public class Pedido implements Serializable {
 
 	public void setStatusPedido(StatusPedido statusPedido) {
 		this.statusPedido = statusPedido;
+	}
+
+	
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
 	}
 
 	@Override

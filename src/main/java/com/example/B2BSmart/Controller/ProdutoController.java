@@ -28,6 +28,11 @@ public class ProdutoController {
 	public List<Produto> buscarProdutos() {
 		return productService.buscarProdutos();
 	}
+	
+	@GetMapping(value = "/buscar/fornecedor/{id}")
+	public List<Produto> buscarPorFornecedor(@PathVariable Long id) throws Exception{
+		return productService.buscarPorFornecedor(id);
+	}
 
 	// Método para cadastrar um novo produto
 	@PostMapping(value = "/cadastrar")

@@ -44,11 +44,11 @@ public class PedidoService {
 
 
 	// Metodo voltado para cadastros de novos Pedidos no BD
-	public Pedido inserirPedido(Pedido obj) throws Exception {
-
-		// criando objeto para criação do novo Pedido
-		Pedido PedidoNovo = Repository.saveAndFlush(obj);
-		return PedidoNovo;
+	public Pedido inserirPedido(Pedido obj) throws Exception {	    
+	    // Salvar o pedido
+	    Pedido pedidoNovo = Repository.save(obj);
+	    
+	    return pedidoNovo;
 	}
 
 	// Metodo voltado para alterar algum Pedido ja cadastrado no BD
@@ -68,6 +68,7 @@ public class PedidoService {
 		entity.setCliente(obj.getCliente());
 		entity.setFornecedor(obj.getFornecedor());
 		entity.setStatusPedido(obj.getStatusPedido());
+		entity.setProduto(obj.getProduto());
 	}
 
 	// Método para cancelar um pedido
