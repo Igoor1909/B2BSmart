@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.B2BSmart.entity.Estoque;
-import com.example.B2BSmart.entity.Produto;
 
 public interface EstoqueRespository extends JpaRepository<Estoque, Long> {
 
-	@Query("SELECT k FROM Produto k WHERE k.fornecedor.id = :fornecedorId")
-    Produto findByFornecedor(@Param("fornecedorId") Long fornecedorId);
+	@Query("SELECT e FROM Estoque e WHERE e.id_fornecedor.id = :fornecedorId")
+	Estoque findByFornecedor(@Param("fornecedorId") Long fornecedorId);
 
+	@Query("SELECT p FROM Estoque p WHERE p.id_produto.id = :produtoId")
+	Estoque findByProduto(@Param("produtoId") Long produtoId);
 }
 
