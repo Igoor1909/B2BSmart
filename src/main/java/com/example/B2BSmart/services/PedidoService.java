@@ -7,10 +7,13 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.B2BSmart.entity.Estoque;
 import com.example.B2BSmart.entity.Pedido;
 import com.example.B2BSmart.entity.StatusPedido;
+import com.example.B2BSmart.exceptions.QuantidadeInsuficienteException;
 import com.example.B2BSmart.exceptions.ResourceNotFoundException;
 import com.example.B2BSmart.exceptions.StatusEnviadoException;
+import com.example.B2BSmart.repository.EstoqueRespository;
 import com.example.B2BSmart.repository.PedidoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -21,34 +24,36 @@ public class PedidoService {
 	// anotation responsavel por injetar uma outra classe nesta
 	@Autowired
 	PedidoRepository Repository;
-	
-	//metodo voltado para buscar todos os conteudos da lista de pedidos
-	public List<Pedido> buscarTodos(){
+
+	@Autowired
+	EstoqueRespository estoqueRespository;
+
+	// metodo voltado para buscar todos os conteudos da lista de pedidos
+	public List<Pedido> buscarTodos() {
 		return Repository.findAll();
 	}
 
 	// Metodo para buscar pedido apartir de seu ID
 	public List<Pedido> buscarPorID(Long id) throws Exception {
-	    try {
-	        // Obtém o pedido correspondente ao ID fornecido
-	        Pedido pedido = Repository.getReferenceById(id);
-	        // Desproxifica o pedido
-	        pedido = (Pedido) Hibernate.unproxy(pedido);
-	        // Retorna o pedido
-	        return Collections.singletonList(pedido);
-	    } catch (EntityNotFoundException e) {
-	        // Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
-	        throw new ResourceNotFoundException(id);
-	    }
+		try {
+			// Obtém o pedido correspondente ao ID fornecido
+			Pedido pedido = Repository.getReferenceById(id);
+			// Desproxifica o pedido
+			pedido = (Pedido) Hibernate.unproxy(pedido);
+			// Retorna o pedido
+			return Collections.singletonList(pedido);
+		} catch (EntityNotFoundException e) {
+			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
-
 	// Metodo voltado para cadastros de novos Pedidos no BD
-	public Pedido inserirPedido(Pedido obj) throws Exception {	    
-	    // Salvar o pedido
-	    Pedido pedidoNovo = Repository.save(obj);
-	    
-	    return pedidoNovo;
+	public Pedido inserirPedido(Pedido obj) throws Exception {
+		// Salvar o pedido
+		Pedido pedidoNovo = Repository.save(obj);
+
+		return pedidoNovo;
 	}
 
 	// Metodo voltado para alterar algum Pedido ja cadastrado no BD
@@ -69,6 +74,21 @@ public class PedidoService {
 		entity.setFornecedor(obj.getFornecedor());
 		entity.setStatusPedido(obj.getStatusPedido());
 		entity.setProduto(obj.getProduto());
+		entity.setQuantidade(obj.getQuantidade());
+	}
+
+	public void diminuirEstoque(Estoque entity, Pedido obj) throws QuantidadeInsuficienteException {
+	    // Verifica se a quantidade em estoque é suficiente para o pedido
+	    if (entity.getQuantidade() < obj.getQuantidade()) {
+	        throw new QuantidadeInsuficienteException("Não há estoque suficiente para realizar o pedido.");
+	    }
+	    // Diminui a quantidade do estoque
+	    entity.setQuantidade(entity.getQuantidade() - obj.getQuantidade());
+	}
+
+
+	public void retornarEstoque(Estoque entity, Pedido obj) {
+		entity.setQuantidade(entity.getQuantidade() + obj.getQuantidade());
 	}
 
 	// Método para cancelar um pedido
@@ -89,10 +109,18 @@ public class PedidoService {
 				// Lança uma exceção se o pedido ja estiver cancelado
 				throw new StatusEnviadoException("Pedido ja cancelado!");
 			}
+
+			// Encontra o estoque correspondente ao produto do pedido cancelado
+			Estoque estoque = estoqueRespository.findByProduto(obj.getProduto().getId());
+			// Atualiza a quantidade do estoque usando o método retornarEstoque
+			retornarEstoque(estoque, obj);
+			// Salva as alterações no estoque no banco de dados
+			estoqueRespository.save(estoque);
 			// Define o status do pedido como CANCELADO
 			pedido.setStatusPedido(StatusPedido.CANCELADO);
 			// Salva as alterações no banco de dados
-			return Repository.save(pedido);
+			Pedido pedidoCancelado = Repository.save(pedido);
+			return pedidoCancelado;
 		} catch (EntityNotFoundException e) {
 			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
 			throw new ResourceNotFoundException(id);
@@ -114,10 +142,14 @@ public class PedidoService {
 				// Lança uma exceção se o pedido já estiver cancelado
 				throw new StatusEnviadoException("Pedido já cancelado");
 			}
+			Estoque estoque = estoqueRespository.findByProduto(obj.getProduto().getId());
+			diminuirEstoque(estoque, obj);
+			estoqueRespository.save(estoque);
 			// Define o status do pedido como EM_TRANSPORTE
 			pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
 			// Salva as alterações no banco de dados
-			return Repository.save(pedido);
+			Pedido pedidoEnviado = Repository.save(pedido);
+			return pedidoEnviado;
 		} catch (EntityNotFoundException e) {
 			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
 			throw new ResourceNotFoundException(id);
@@ -140,7 +172,7 @@ public class PedidoService {
 				// Lança uma exceção se o pedido já estiver finalizado
 				throw new StatusEnviadoException("Pedido já finalizado!");
 			}
-
+			
 			// Define o status do pedido como FINALIZADO
 			pedido.setStatusPedido(StatusPedido.FINALIZADO);
 

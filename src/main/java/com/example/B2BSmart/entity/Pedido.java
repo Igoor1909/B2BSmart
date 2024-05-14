@@ -40,18 +40,21 @@ public class Pedido implements Serializable {
 	@JoinColumn(name = "id_produto")
 	private Produto produto;
 	
+	private Integer quantidade;
+	
 	
 	public Pedido() {
 
 	}
 
-	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor) {
+	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor, Integer quantidade) {
 		super();
 		this.id = id;
 		this.dataHora = dataHora;
 		this.statusPedido = statusPedido;
 		this.cliente = cliente;
 		this.fornecedor = fornecedor;
+		this.quantidade = quantidade;
 	}
 
 	public Long getId() {
@@ -121,6 +124,14 @@ public class Pedido implements Serializable {
 		Pedido other = (Pedido) obj;
 		return Objects.equals(id, other.id);
 
+	}
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
 	}
 
 }
