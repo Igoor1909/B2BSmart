@@ -75,6 +75,7 @@ public class PedidoService {
 		entity.setStatusPedido(obj.getStatusPedido());
 		entity.setProduto(obj.getProduto());
 		entity.setQuantidade(obj.getQuantidade());
+		entity.setPagamento(obj.getPagamento());
 	}
 
 	public void diminuirEstoque(Estoque entity, Pedido obj) throws QuantidadeInsuficienteException {
@@ -118,6 +119,7 @@ public class PedidoService {
 			estoqueRespository.save(estoque);
 			// Define o status do pedido como CANCELADO
 			pedido.setStatusPedido(StatusPedido.CANCELADO);
+			
 			// Salva as alterações no banco de dados
 			Pedido pedidoCancelado = Repository.save(pedido);
 			return pedidoCancelado;

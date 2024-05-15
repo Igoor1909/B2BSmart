@@ -11,8 +11,6 @@ import com.example.B2BSmart.entity.StatusPedido;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     
-	@Query("select i from Pedido i where i.statusPedido = :status_pedido")
-	public Pedido findByStatusPedido(@Param("status_pedido") StatusPedido statusPedido);
 }
 
 

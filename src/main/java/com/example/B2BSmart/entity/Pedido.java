@@ -42,12 +42,16 @@ public class Pedido implements Serializable {
 	
 	private Integer quantidade;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_pagamento")
+	private Pagamento pagamento;
+	
 	
 	public Pedido() {
 
 	}
 
-	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor, Integer quantidade) {
+	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor, Integer quantidade, Pagamento pagamento) {
 		super();
 		this.id = id;
 		this.dataHora = dataHora;
@@ -55,6 +59,7 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 		this.fornecedor = fornecedor;
 		this.quantidade = quantidade;
+		this.pagamento = pagamento;
 	}
 
 	public Long getId() {
@@ -134,4 +139,13 @@ public class Pedido implements Serializable {
 		this.quantidade = quantidade;
 	}
 
+	public Pagamento getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(Pagamento pagamento) {
+		this.pagamento = pagamento;
+	}
+
+	
 }
