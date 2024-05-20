@@ -1,16 +1,23 @@
 package com.example.B2BSmart.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,30 +44,36 @@ public class Pedido implements Serializable {
 	private Fornecedor fornecedor;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_produto")
-	private Produto produto;
-	
-	private Integer quantidade;
-	
-	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
 	private Pagamento pagamento;
+	
+	
+	@OneToMany(mappedBy = "idPedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ItemPedido> itens = new HashSet<>();
+	
+	@JoinColumn(name = "total_venda")
+	private BigDecimal totalVenda;
 	
 	
 	public Pedido() {
 
 	}
 
-	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor, Integer quantidade, Pagamento pagamento) {
+	
+
+	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor,
+			Pagamento pagamento, BigDecimal totalVenda) {
 		super();
 		this.id = id;
 		this.dataHora = dataHora;
 		this.statusPedido = statusPedido;
 		this.cliente = cliente;
 		this.fornecedor = fornecedor;
-		this.quantidade = quantidade;
 		this.pagamento = pagamento;
+		this.totalVenda = totalVenda;
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -103,16 +116,6 @@ public class Pedido implements Serializable {
 		this.statusPedido = statusPedido;
 	}
 
-	
-
-	public Produto getProduto() {
-		return produto;
-	}
-
-	public void setProduto(Produto produto) {
-		this.produto = produto;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -131,13 +134,6 @@ public class Pedido implements Serializable {
 
 	}
 
-	public Integer getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(Integer quantidade) {
-		this.quantidade = quantidade;
-	}
 
 	public Pagamento getPagamento() {
 		return pagamento;
@@ -147,5 +143,27 @@ public class Pedido implements Serializable {
 		this.pagamento = pagamento;
 	}
 
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
+
+
+
+	public BigDecimal getTotalVenda() {
+		return totalVenda;
+	}
+
+	public void setTotalVenda(BigDecimal totalVenda) {
+		this.totalVenda = totalVenda;
+	}
+
+
+
 	
+	
+
 }

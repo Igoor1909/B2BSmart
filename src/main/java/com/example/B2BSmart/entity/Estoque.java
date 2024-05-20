@@ -2,6 +2,8 @@ package com.example.B2BSmart.entity;
 
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+@Component
 @Entity
 @Table(name = "estoque")
 public class Estoque {

@@ -1,10 +1,13 @@
 package com.example.B2BSmart.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,13 +36,14 @@ public class Produto implements Serializable {
 	
 	
 	private String nome;
-	private Double preco;
+	private BigDecimal preco;
 	private String marca;
 	private String descricao;
 	private String codigo_EAN;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_fornecedor")
+	@JsonIgnore
 	private Fornecedor fornecedor;
 	
 	
@@ -54,7 +58,7 @@ public class Produto implements Serializable {
 		
 	}
 	
-	public Produto(Long id, String nome, Double preco, String marca, String descricao,
+	public Produto(Long id, String nome, BigDecimal preco, String marca, String descricao,
 			Integer quantidadeInicial, Date dataCriacao, String codigo_EAN, Date dataAtualizacao, Fornecedor fornecedor) {
 		super();
 		this.id = id;
@@ -78,7 +82,7 @@ public class Produto implements Serializable {
 	}
 
 
-	public Double getPreco() {
+	public BigDecimal getPreco() {
 		return preco;
 	}
 
@@ -99,7 +103,7 @@ public class Produto implements Serializable {
 	}
 
 
-	public void setPreco(Double preco) {
+	public void setPreco(BigDecimal preco) {
 		this.preco = preco;
 	}
 
