@@ -43,6 +43,9 @@ public class PedidoService {
 	@Autowired
 	ItemPedidoService itemPedidoService;
 
+	@Autowired
+	EstoqueService estoqueService;
+
 	// metodo voltado para buscar todos os conteudos da lista de pedidos
 	public List<Pedido> buscarTodos() {
 		return Repository.findAll();
@@ -65,55 +68,54 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido inserirPedido(Pedido pedido) throws Exception {
-	    // Associar cada item ao pedido antes de salvar
-	    for (ItemPedido item : pedido.getItens()) {
-	        item.setIdPedido(pedido);
-	    }
+		// Associar cada item ao pedido antes de salvar
+		for (ItemPedido item : pedido.getItens()) {
+			item.setIdPedido(pedido);
+		}
 
-	    // Calcular o valor total dos itens
-	    calcularValorTotalItens(pedido);
+		// Calcular o valor total dos itens
+		calcularValorTotalItens(pedido);
 
-	    // Calcular o total da venda
-	    calcularTotalVenda(pedido);
+		// Calcular o total da venda
+		calcularTotalVenda(pedido);
 
-	    // Salvar o pedido, que também salva os itens devido ao cascade
-	    Pedido pedidoNovo = pedidoRepository.save(pedido);
+		// Salvar o pedido, que também salva os itens devido ao cascade
+		Pedido pedidoNovo = pedidoRepository.save(pedido);
 
-	    return pedidoNovo;
+		return pedidoNovo;
 	}
 
 	private void calcularTotalVenda(Pedido pedido) {
-	    BigDecimal totalVenda = BigDecimal.ZERO;
-	    for (ItemPedido item : pedido.getItens()) {
-	        totalVenda = totalVenda.add(item.getValorTotal());
-	    }
-	    pedido.setTotalVenda(totalVenda);
+		BigDecimal totalVenda = BigDecimal.ZERO;
+		for (ItemPedido item : pedido.getItens()) {
+			totalVenda = totalVenda.add(item.getValorTotal());
+		}
+		pedido.setTotalVenda(totalVenda);
 	}
-
 
 	// Metodo voltado para alterar algum Pedido ja cadastrado no BD
 	@Transactional
 	public Pedido alterarPedido(Pedido obj, Long id) throws Exception {
-	    Pedido pedido;
-	    try {
-	        pedido = pedidoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+		Pedido pedido;
+		try {
+			pedido = pedidoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 
-	        // Atualiza os dados do pedido com base no obj
-	        updateData(pedido, obj);
+			// Atualiza os dados do pedido com base no obj
+			updateData(pedido, obj);
 
-	        // Atualiza os itens de pedido
-	        atualizarItensPedido(pedido, obj);
+			// Atualiza os itens de pedido
+			atualizarItensPedido(pedido, obj);
 
-	        // Calcular valor total dos itens de pedido
-	        calcularValorTotalItens(pedido);
+			// Calcular valor total dos itens de pedido
+			calcularValorTotalItens(pedido);
 
-	        // Calcular o total da venda
-	        calcularTotalVenda(pedido);
+			// Calcular o total da venda
+			calcularTotalVenda(pedido);
 
-	    } catch (EntityNotFoundException e) {
-	        throw new ResourceNotFoundException(id);
-	    }
-	    return pedidoRepository.save(pedido);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
+		return pedidoRepository.save(pedido);
 	}
 
 	// Método para atualizar os dados do pedido
@@ -157,10 +159,6 @@ public class PedidoService {
 		for (ItemPedido itemPedido : pedido.getItens()) {
 			itemPedidoService.calcularValorTotal(itemPedido);
 		}
-	}
-
-	public void diminuirEstoque(Estoque entity, Pedido obj) throws QuantidadeInsuficienteException {
-
 	}
 
 	// Método para cancelar um pedido
@@ -207,6 +205,16 @@ public class PedidoService {
 				throw new StatusEnviadoException("Pedido já finalizado!");
 			} else if (pedido.getStatusPedido() == StatusPedido.CANCELADO) {
 				throw new StatusEnviadoException("Pedido já cancelado");
+			}
+
+			// Atualiza o estoque antes de enviar o pedido
+			for (ItemPedido itemPedido : pedido.getItens()) {
+				Estoque estoque = estoqueRespository.findByProduto(itemPedido.getIdProduto().getId());
+				if (itemPedido.getQuantidade() > estoque.getQuantidade()) {
+					throw new Exception(
+							"Estoque insuficiente para o produto com ID: " + itemPedido.getIdProduto().getId());
+				}
+				estoqueService.atualizarEstoque(itemPedido.getIdProduto().getId(), itemPedido.getQuantidade());
 			}
 
 			pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);

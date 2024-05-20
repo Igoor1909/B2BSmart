@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -61,11 +60,11 @@ public class Pedido implements Serializable {
 
 	
 
-	public Pedido(Long id, Instant dataHora, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor,
+	public Pedido(Long id, StatusPedido statusPedido, Cliente cliente, Fornecedor fornecedor,
 			Pagamento pagamento, BigDecimal totalVenda) {
 		super();
 		this.id = id;
-		this.dataHora = dataHora;
+		this.dataHora = Instant.now();
 		this.statusPedido = statusPedido;
 		this.cliente = cliente;
 		this.fornecedor = fornecedor;

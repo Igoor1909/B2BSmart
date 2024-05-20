@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.B2BSmart.entity.Estoque;
-import com.example.B2BSmart.entity.Produto;
 
 public interface EstoqueRespository extends JpaRepository<Estoque, Long> {
 

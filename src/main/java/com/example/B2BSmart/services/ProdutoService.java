@@ -74,6 +74,7 @@ public class ProdutoService {
 		entity.setNome(obj.getNome());
 		entity.setPreco(obj.getPreco());
 		entity.setMarca(obj.getMarca());
+		entity.setFornecedor(obj.getFornecedor());
 		entity.setDescricao(obj.getDescricao());
 		entity.setCodigoEAN(obj.getCodigoEAN());
 		entity.setCategorias(obj.getCategorias());

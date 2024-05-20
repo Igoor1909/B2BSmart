@@ -64,4 +64,15 @@ public class EstoqueService {
     public void updateData(Estoque entity, Estoque obj) {
         entity.setQuantidade(entity.getQuantidade() + obj.getQuantidade());
     }
+    
+    public void atualizarEstoque(Long idProduto, Integer quantidade) {
+        // Busca o produto no estoque pelo id
+        Estoque estoque = estoqueRespository.findByProduto(idProduto);
+
+        // Atualiza a quantidade do produto no estoque
+        estoque.setQuantidade(estoque.getQuantidade() - quantidade);
+
+        // Salva as alterações no banco de dados
+        estoqueRespository.save(estoque);
+    }
 }
