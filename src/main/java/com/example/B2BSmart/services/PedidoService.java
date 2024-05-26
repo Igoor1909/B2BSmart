@@ -1,6 +1,7 @@
 package com.example.B2BSmart.services;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +71,9 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido inserirPedido(Pedido pedido) throws Exception {
+		
+		// Definir a data e hora atuais
+	    pedido.setDataHora(Instant.now());
 		// Associar cada item ao pedido antes de salvar
 		pedido.setStatusPedido(StatusPedido.SOLICITADO);
 		for (ItemPedido item : pedido.getItens()) {

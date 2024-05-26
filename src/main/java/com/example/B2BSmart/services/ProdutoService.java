@@ -21,7 +21,7 @@ public class ProdutoService {
 	// anotation responsavel por injetar uma outra classe nesta
 	@Autowired
 	ProdutoRepository productRepository;
-	
+
 	@Autowired
 	EstoqueRespository estoqueRespository;
 
@@ -41,20 +41,28 @@ public class ProdutoService {
 		}
 	}
 
-	// Metodo voltado para cadastros de novos produtos no BD
+	// Método para fazer a inserção do produto no sistema
 	public Produto inserirProduto(Produto obj) throws Exception {
+		// Verifica se o código EAN já está registrado
+		Produto produtoExistente = productRepository.findByCodigoEAN(obj.getCodigoEAN());
+		if (produtoExistente != null) {
+			throw new Exception("Código EAN já registrado no sistema.");
+		}
+
+		// Salva o novo produto
 		Produto produtoNovo = productRepository.saveAndFlush(obj);
-	    
-	    // Criando um novo registro de estoque
-	    Estoque estoque = new Estoque();
-	    estoque.setId_produto(produtoNovo);
-	    estoque.setId_fornecedor(produtoNovo.getFornecedor()); // Supondo que o fornecedor do produto seja o mesmo do estoque
-	    estoque.setQuantidade(0); // Define a quantidade inicial como 0
-	    
-	    // Salvando o registro de estoque
-	    estoqueRespository.save(estoque);
-	    
-	    return produtoNovo;
+
+		// Criando um novo registro de estoque
+		Estoque estoque = new Estoque();
+		estoque.setId_produto(produtoNovo);
+		estoque.setId_fornecedor(produtoNovo.getFornecedor()); 
+		// Define a quantidade inicial como 0
+		estoque.setQuantidade(0);
+
+		// Salvando o registro de estoque
+		estoqueRespository.save(estoque);
+
+		return produtoNovo;
 	}
 
 	// Metodo voltado para alterar algum produto ja cadastrado no BD
