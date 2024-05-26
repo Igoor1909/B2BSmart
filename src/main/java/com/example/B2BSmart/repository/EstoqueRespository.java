@@ -14,5 +14,7 @@ public interface EstoqueRespository extends JpaRepository<Estoque, Long> {
 
 	@Query("SELECT p FROM Estoque p WHERE p.id_produto.id = :produtoId")
 	Estoque findByProduto(@Param("produtoId") Long produtoId);
+	
+	
 }
 

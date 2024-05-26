@@ -5,16 +5,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.B2BSmart.DTO.ClienteVendaDTO;
+import com.example.B2BSmart.DTO.FornecedorVendaDTO;
 import com.example.B2BSmart.entity.Estoque;
 import com.example.B2BSmart.entity.ItemPedido;
 import com.example.B2BSmart.entity.Pedido;
 import com.example.B2BSmart.entity.StatusPedido;
-import com.example.B2BSmart.exceptions.QuantidadeInsuficienteException;
 import com.example.B2BSmart.exceptions.ResourceNotFoundException;
 import com.example.B2BSmart.exceptions.StatusEnviadoException;
 import com.example.B2BSmart.repository.EstoqueRespository;
@@ -69,6 +71,7 @@ public class PedidoService {
 	@Transactional
 	public Pedido inserirPedido(Pedido pedido) throws Exception {
 		// Associar cada item ao pedido antes de salvar
+		pedido.setStatusPedido(StatusPedido.SOLICITADO);
 		for (ItemPedido item : pedido.getItens()) {
 			item.setIdPedido(pedido);
 		}
@@ -193,35 +196,46 @@ public class PedidoService {
 
 	public Pedido enviarPedido(Pedido obj, Long id) throws Exception {
 		try {
+			// Obtém a referência do pedido pelo ID
 			Pedido pedido = Repository.getReferenceById(id);
 
+			// Verifica se o pedido existe
 			if (pedido == null) {
+				// Lança uma exceção se o pedido não for encontrado
 				throw new ResourceNotFoundException("Pedido não encontrado para o ID fornecido: " + id);
 			}
-
+			// Verifica o status atual do pedido
 			if (pedido.getStatusPedido() == StatusPedido.EM_TRANSPORTE) {
+				// Lança uma exceção se o pedido já estiver em transporte
 				throw new StatusEnviadoException("Pedido já em transporte!");
 			} else if (pedido.getStatusPedido() == StatusPedido.FINALIZADO) {
+				// Lança uma exceção se o pedido já estiver finalizado
 				throw new StatusEnviadoException("Pedido já finalizado!");
 			} else if (pedido.getStatusPedido() == StatusPedido.CANCELADO) {
+				// Lança uma exceção se o pedido já estiver cancelado
 				throw new StatusEnviadoException("Pedido já cancelado");
 			}
-
 			// Atualiza o estoque antes de enviar o pedido
 			for (ItemPedido itemPedido : pedido.getItens()) {
+				// Busca o estoque do produto
 				Estoque estoque = estoqueRespository.findByProduto(itemPedido.getIdProduto().getId());
+				// Verifica se há quantidade suficiente no estoque
 				if (itemPedido.getQuantidade() > estoque.getQuantidade()) {
+					// Lança uma exceção se o estoque for insuficiente
 					throw new Exception(
 							"Estoque insuficiente para o produto com ID: " + itemPedido.getIdProduto().getId());
 				}
+				// Atualiza o estoque com a quantidade do item pedido
 				estoqueService.atualizarEstoque(itemPedido.getIdProduto().getId(), itemPedido.getQuantidade());
 			}
-
+			// Define o status do pedido para "EM_TRANSPORTE"
 			pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
+			// Salva o pedido atualizado
 			Pedido pedidoEnviado = Repository.save(pedido);
-
+			// Retorna o pedido enviado
 			return pedidoEnviado;
 		} catch (EntityNotFoundException e) {
+			// Lança uma exceção se o pedido não for encontrado
 			throw new ResourceNotFoundException("Pedido não encontrado para o ID fornecido: " + id);
 		}
 	}
@@ -252,6 +266,84 @@ public class PedidoService {
 			// Se o pedido não for encontrado, lança uma exceção de recurso não encontrado
 			throw new ResourceNotFoundException(id);
 		}
+	}
+
+	public FornecedorVendaDTO getVendaInfoPorFornecedor(Long fornecedorId) {
+		List<Pedido> pedidos = pedidoRepository.findAll();
+
+		int totalQuantidadeItens = 0;
+		BigDecimal totalVendas = BigDecimal.ZERO;
+
+		// Filtrar pedidos pelo ID do fornecedor
+		List<Pedido> pedidosFiltrados = pedidos.stream()
+				.filter(pedido -> pedido.getFornecedor().getId().equals(fornecedorId)).collect(Collectors.toList());
+
+		for (Pedido pedido : pedidosFiltrados) {
+			BigDecimal totalVenda = pedido.getTotalVenda();
+			if (totalVenda != null) {
+				totalVendas = totalVendas.add(totalVenda);
+			}
+			for (ItemPedido item : pedido.getItens()) {
+				Integer quantidade = item.getQuantidade();
+				if (quantidade != null) {
+					totalQuantidadeItens += quantidade;
+				}
+			}
+		}
+
+		FornecedorVendaDTO fornecedorVendaInfoDTO = new FornecedorVendaDTO();
+		fornecedorVendaInfoDTO.setFornecedorId(fornecedorId);
+		fornecedorVendaInfoDTO.setTotalQuantidadeItens(totalQuantidadeItens);
+		fornecedorVendaInfoDTO.setTotalVendas(totalVendas);
+		fornecedorVendaInfoDTO.setPedidos(pedidosFiltrados);
+
+		return fornecedorVendaInfoDTO;
+	}
+
+	public ClienteVendaDTO getVendaInfoPorCliente(Long clienteId) {
+		// Obtem todos os pedidos do repositório
+		List<Pedido> pedidos = pedidoRepository.findAll();
+
+		// Inicializa as variáveis para a quantidade total de itens e o valor total das vendas
+		int totalQuantidadeItens = 0;
+		BigDecimal totalVendas = BigDecimal.ZERO;
+
+		// Filtra a lista de pedidos para incluir apenas aqueles feitos pelo cliente com o ID especificado
+		List<Pedido> pedidosFiltrados = pedidos.stream().filter(pedido -> pedido.getCliente().getId().equals(clienteId))
+				.collect(Collectors.toList());
+
+		// Itera sobre os pedidos filtrados
+		for (Pedido pedido : pedidosFiltrados) {
+			// Obtem o valor total da venda para o pedido atual
+			BigDecimal totalVenda = pedido.getTotalVenda();
+			// Se o valor total da venda não for nulo, adiciona-o ao totalVendas
+			if (totalVenda != null) {
+				totalVendas = totalVendas.add(totalVenda);
+			}
+			// Itera sobre os itens do pedido atual
+			for (ItemPedido item : pedido.getItens()) {
+				// Obtem a quantidade de itens do pedido atual
+				Integer quantidade = item.getQuantidade();
+				// Se a quantidade não for nula, adiciona-a ao totalQuantidadeItens
+				if (quantidade != null) {
+					totalQuantidadeItens += quantidade;
+				}
+			}
+		}
+
+		// Cria uma nova instância de ClienteVendaDTO para armazenar os dados agregados
+		ClienteVendaDTO clienteVendaInfoDTO = new ClienteVendaDTO();
+		// Define o ID do cliente no DTO
+		clienteVendaInfoDTO.setClienterId(clienteId);
+		// Define a quantidade total de itens no DTO
+		clienteVendaInfoDTO.setTotalQuantidadeItens(totalQuantidadeItens);
+		// Define o valor total das vendas no DTO
+		clienteVendaInfoDTO.setTotalVendas(totalVendas);
+		// Define a lista de pedidos filtrados no DTO
+		clienteVendaInfoDTO.setPedidos(pedidosFiltrados);
+
+		// Retorna o DTO contendo as informações agregadas de vendas para o cliente especificado
+		return clienteVendaInfoDTO;
 	}
 
 	// Metodo voltado para excluir Pedidos ja cadastrado no BD, buscando pelo seu

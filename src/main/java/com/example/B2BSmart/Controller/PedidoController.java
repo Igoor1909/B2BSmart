@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.B2BSmart.entity.ItemPedido;
+import com.example.B2BSmart.DTO.ClienteVendaDTO;
+import com.example.B2BSmart.DTO.FornecedorVendaDTO;
 import com.example.B2BSmart.entity.Pedido;
+import com.example.B2BSmart.repository.PedidoRepository;
 import com.example.B2BSmart.services.PedidoService;
 
 @RestController
@@ -23,6 +25,9 @@ public class PedidoController {
 
 	@Autowired
 	private PedidoService pedidoService;
+
+	@Autowired
+	PedidoRepository Repository;
 
 	// Método para buscar todos os Pedidos cadastrados
 	@GetMapping(value = "/buscar")
@@ -76,5 +81,15 @@ public class PedidoController {
 	public ResponseEntity<String> finalizarPedido(@PathVariable Long id, @RequestBody Pedido obj) throws Exception {
 		obj = pedidoService.finalizarPedido(obj, id);
 		return ResponseEntity.ok("Pedido finalizado com sucesso!");
+	}
+
+	@GetMapping("/buscar/fornecedor/total/{id}")
+	public FornecedorVendaDTO getVendaInfoPorFornecedor(@PathVariable Long id) {
+		return pedidoService.getVendaInfoPorFornecedor(id);
+	}
+	
+	@GetMapping("/buscar/cliente/total/{id}")
+	public ClienteVendaDTO getVendaInfoPorCliente(@PathVariable Long id) {
+		return pedidoService.getVendaInfoPorCliente(id);
 	}
 }
